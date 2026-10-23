@@ -1,0 +1,59 @@
+# Arquitectura de tres servicios:
+#
+#   frontend (Next.js :3001)
+#      ↓  el NAVEGADOR llama a http://localhost:3000
+#   backend  (NestJS  :3000)
+#      ↓  el CONTENEDOR llama a database:5432 (red interna de Compose)
+#   database (PostgreSQL 16 :5432)
+#
+# Levantar todo:   docker compose up -d --build
+# Detener todo:    docker compose down
+# Borrar datos:    docker compose down -v
+
+services:
+  database:
+    build: ./database
+    environment:
+      POSTGRES_DB: docker_tienda
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: postgres
+    ports:
+      - "5432:5432"
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+    # "healthy" solo cuando PostgreSQL acepta conexiones TCP
+    healthcheck:
+      test: ["CMD", "pg_isready", "-h", "localhost", "-U", "postgres", "-d", "docker_tienda"]
+      interval: 5s
+      timeout: 5s
+      retries: 10
+
+  backend:
+    build: ./backend
+    environment:
+      DB_HOST: database        # nombre del servicio, NO localhost
+      DB_PORT: 5432
+      DB_USERNAME: postgres
+      DB_PASSWORD: postgres
+      DB_DATABASE: docker_tienda
+      PORT: 3000
+    ports:
+      - "3000:3000"
+    depends_on:
+      database:
+        condition: service_healthy
+
+  frontend:
+    build:
+      context: ./frontend
+      args:
+        # Se incrusta en el JavaScript durante el build.
+        # Lo usa el navegador del usuario, por eso es localhost y no "backend".
+        NEXT_PUBLIC_API_URL: http://localhost:3000
+    ports:
+      - "3001:3001"
+    depends_on:
+      - backend
+
+volumes:
+  postgres_data:

@@ -1,0 +1,98 @@
+{
+  "info": {
+    "name": "docker_tienda API",
+    "description": "API REST NestJS + PostgreSQL para la clase de Docker",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "variable": [
+    { "key": "baseUrl", "value": "http://localhost:3000" }
+  ],
+  "item": [
+    {
+      "name": "Health",
+      "request": { "method": "GET", "url": "{{baseUrl}}/health" }
+    },
+    {
+      "name": "Categories",
+      "item": [
+        {
+          "name": "Listar categorías",
+          "request": { "method": "GET", "url": "{{baseUrl}}/categories" }
+        },
+        {
+          "name": "Obtener categoría",
+          "request": { "method": "GET", "url": "{{baseUrl}}/categories/1" }
+        },
+        {
+          "name": "Crear categoría",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/categories",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Almacenamiento\",\n  \"description\": \"Discos duros, SSD y memorias USB\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar categoría",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/categories/4",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"description\": \"Unidades de almacenamiento\"\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar categoría",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/categories/4" }
+        }
+      ]
+    },
+    {
+      "name": "Products",
+      "item": [
+        {
+          "name": "Listar productos",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products" }
+        },
+        {
+          "name": "Obtener producto",
+          "request": { "method": "GET", "url": "{{baseUrl}}/products/1" }
+        },
+        {
+          "name": "Crear producto",
+          "request": {
+            "method": "POST",
+            "url": "{{baseUrl}}/products",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Parlantes Bluetooth\",\n  \"description\": \"Parlantes portátiles con batería de 10 horas\",\n  \"price\": 129.9,\n  \"stock\": 15,\n  \"categoryId\": 2\n}"
+            }
+          }
+        },
+        {
+          "name": "Actualizar producto",
+          "request": {
+            "method": "PATCH",
+            "url": "{{baseUrl}}/products/1",
+            "header": [{ "key": "Content-Type", "value": "application/json" }],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"price\": 169.9,\n  \"stock\": 30\n}"
+            }
+          }
+        },
+        {
+          "name": "Eliminar producto",
+          "request": { "method": "DELETE", "url": "{{baseUrl}}/products/11" }
+        }
+      ]
+    }
+  ]
+}
